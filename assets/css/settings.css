@@ -1,0 +1,14 @@
+#web-scraping-settings-content {
+    margin: 20px 20px;
+}
+
+#web-scraping-settings-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+#web-scraping-settings-content form input[type="submit"] {
+    width: fit-content;
+    padding: 0.5rem 1rem;
+    margin-top: 2rem;
+}
