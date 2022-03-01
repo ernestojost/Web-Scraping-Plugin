@@ -69,23 +69,31 @@ $content_jquery = $_POST['content-jquery'];
             </select>
             <div id="form-web-scraping-panel">
                 <button class="submit" type="button"><?php echo (get_option('wep_scraping_plugin_language') == 'english') ? 'Search': 'Buscar';?></button>
-                <button class="return" type="button"><?php echo (get_option('wep_scraping_plugin_language') == 'english') ? 'Return': 'Volver';?></button>
+                <p id="form-web-scraping-panel-notice">Hay un error</p>
             </div>
         </div>    
-    </div>
-
-    <div id="web-scraping-data-obtained">
-        <h3>Data obtained</h3>
-        <div id="web-scraping-data-obtained-content">
-            <div id="web-scraping-data-obtained-panel">
-                <button id="web-scraping-data-obtained-format-all" class="submit" type="button">Format all</button>
-                <button id="web-scraping-data-obtained-create-all-posts" class="submit" type="button">Create all posts</button>
+        <div id="web-scraping-data-obtained">
+            <hr>
+            <h3><?php echo (get_option('wep_scraping_plugin_language') == 'english') ? 'Data obtained': 'Datos obtenidos';?></h3>
+            <hr>
+            <div id="web-scraping-data-obtained-content">
+                <div id="web-scraping-data-obtained-panel">
+                    <div id="web-scraping-data-obtained-panel-format">
+                        <p class="web-scraping-data-obtained-panel-title"><?php echo (get_option('wep_scraping_plugin_language') == 'english') ? 'Format': 'Formatear';?></p>
+                        <button id="web-scraping-data-obtained-format-all" class="submit web-scraping-data-obtained-panel-button-secondary" type="button"><?php echo (get_option('wep_scraping_plugin_language') == 'english') ? 'Format all': 'Formatear todo';?></button>
+                    </div>
+                    <div id="web-scraping-data-obtained-panel-create-posts">
+                        <p class="web-scraping-data-obtained-panel-title"><?php echo (get_option('wep_scraping_plugin_language') == 'english') ? 'Create posts': 'Crear posts';?></p>
+                        <button id="web-scraping-data-obtained-create-all-posts" class="submit web-scraping-data-obtained-panel-button" type="button"><?php echo (get_option('wep_scraping_plugin_language') == 'english') ? 'Create all posts': 'Crear todos los posts';?></button>
+                    </div>
+                </div>
+                <p id="web-scraping-data-obtained-notice"><?php echo (get_option('wep_scraping_plugin_language') == 'english') ? 'No data to show': 'No hay datos para mostrar';?></p>
+                <img id="web-scraping-search-spinner" src="<?=WEB_SCRAPING_PLUGIN_URL.'/assets/img/axe.png'?>" alt="<?php echo (get_option('wep_scraping_plugin_language') == 'english') ? 'Searching': 'Buscando';?>">
+                <div id="web-scraping-articles"></div>
             </div>
-            <p id="web-scraping-data-obtained-notice">No data to show</p>
-            <img id="web-scraping-search-spinner" src="<?=WEB_SCRAPING_PLUGIN_URL.'/assets/img/axe.png'?>" alt="Searching">
-            <div id="web-scraping-articles"></div>
         </div>
     </div>
+    
 </div>
 
 

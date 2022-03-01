@@ -36,14 +36,13 @@ jQuery(document).ready(function($) {
             $('#web-scraping-import #web-scraping-type-selected-name').text(type_name);
             $('#web-scraping-import #web-scraping-type-selected-description').text(type_description);
             $('#web-scraping-import').css('display','block');
-            $('#web-scraping-data-obtained').css('display','block');
         }
     }
 
     function convert_type_article_to_text(type) {
         switch (type) {
             case 'blog-with-articles':
-                if($('#wep-scraping-plugin-language').text() == 'english') {
+                if(get_language() == 'english') {
                     return 'Blog with articles';
                 } else {
                     return 'Blog con artículos';
@@ -56,7 +55,7 @@ jQuery(document).ready(function($) {
     function get_description_type_article(type) {
         switch (type) {
             case 'blog-with-articles':
-                if($('#wep-scraping-plugin-language').text() == 'english') {
+                if(get_language() == 'english') {
                     return 'Scraping a blog with articles where within each article you want to get the title of the article with its content.';
                 } else {
                     return 'Hace scraping a un blog con artículos donde dentro de cada artículo se quiere obtener el título del mismo con su contenido';
@@ -64,5 +63,9 @@ jQuery(document).ready(function($) {
             default:
                 return '';
         }
+    }
+
+    function get_language() {
+        return $('#wep-scraping-plugin-language').text();
     }
 })

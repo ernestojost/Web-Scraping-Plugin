@@ -103,6 +103,11 @@
     margin-bottom: 15px;
 }
 
+#form-web-scraping .web-scraping-page-body {
+    margin-bottom: 70px;
+    background-color: white;
+}
+
 #form-web-scraping label {
     font-weight: bold;
 }
@@ -110,7 +115,7 @@
 #form-web-scraping input,
 #form-web-scraping select {
     background-color: #fff;
-    border: 1px solid #ddd;
+    border: 1px solid #cdcdcd;
     border-radius: 4px;
     color: #333;
     display: inline-block;
@@ -129,18 +134,29 @@
     outline: none;
 }
 
+#form-web-scraping .input-error {
+    border: 1px solid red;
+}
+
 #form-web-scraping .web-scraping-page-body .form-web-scraping-element {
-    margin-top: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 /* Form web scraping panel */
 #form-web-scraping-panel {
     width: fit-content;
-    margin: auto;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+}
+#form-web-scraping-panel-notice {
+    display: none;
+    margin-left: 1rem;
+    color: red;
 }
 #form-web-scraping-panel button {
-    padding: 0.8rem 2rem;
-    margin-top: 30px;
+    padding: 10px;
     border-radius: 0.5rem;
     width: fit-content;
     border: 1px solid #ce1516;
@@ -151,37 +167,52 @@
 
 #form-web-scraping-panel .submit {
     color: white;
-    background-color: #ce1516;
+    background-color: #ff982d;
+    border: 2px solid #ff982d;
+    font-weight: 600;
+    border-radius: 4px;
 }
 
-#form-web-scraping-panel .return {
-    color: #ce1516;
-    background-color: white;
+#form-web-scraping-panel .submit:hover {
+    background-color: #f97f00;
+    border-color: #f97f00;
 }
 
 
 /* Data obtained */
 #web-scraping-data-obtained {
     display: none;
-    height: 100%;
-    margin: 20px 20px 0 2px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 1rem;
-}
-
-#web-scraping-data-obtained h3 {
-    background-color: #ce1516;
-    text-align: center;
-    color: white;
-    font-size: 21px;
-    margin: 0px;
-    padding: 18px 0px;
-    border-radius: 1rem 1rem 0rem 0rem;
 }
 
 #web-scraping-data-obtained-content {
     margin: 25px 20px;
+}
+
+.web-scraping-data-obtained-panel-title {
+    margin: 0px;
+    font-weight: 600;
+}
+
+.web-scraping-data-obtained-panel-button {
+    background-color: #ff982d;
+    border-color: #ff982d;
+    color: #fff;
+    border-radius: 4px;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.web-scraping-data-obtained-panel-button-secondary {
+    background-color: #738e9e;
+    border-color: #738e9e;
+    color: #fff;
+    border-radius: 4px;
+    font-weight: 600;
+    padding: 10px;
+}
+
+#web-scraping-data-obtained-panel-create-posts {
+    margin-top: 1rem;
 }
 
 #web-scraping-data-obtained-notice {

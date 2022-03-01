@@ -1,18 +1,33 @@
 jQuery(document).ready(function($) {
 
-    $('body').on("click", "#form-web-scraping .return", function(e){
-
-        $('#web-scraping-import').css('display','none');
-        $('#web-scraping-data-obtained').css('display','none');
-        $('#web-scraping-types-scraping').css('display','flex');
-    
+    $('#form-web-scraping input[type="text"]').blur(function(){
+        if($(this).hasClass("input-error") && $(this).val() != ""){
+            $(this).removeClass("input-error");
+        }
     });
 
     $('body').on("click", "#form-web-scraping .submit", function(e){
 
-        $('#web-scraping-data-obtained-notice').text("Scraping...");
+        if (detect_empty_inputs()) {
+            $('#form-web-scraping-panel-notice').text("Hay campos vacíos");
+            $('#form-web-scraping-panel-notice').css('display','block');
+            return;
+        } else {
+            $('#form-web-scraping-panel-notice').css('display','none');
+        }
+
+        if(get_language() == 'english') {
+            $('#web-scraping-data-obtained-notice').text("Scraping...");
+        } else {
+            $('#web-scraping-data-obtained-notice').text("Scrapeando...");
+        }
+        
         $('#web-scraping-search-spinner').css('display','block');
-        toggle_disable_all_buttons_import();
+        $('#web-scraping-data-obtained').css('display','block');
+        $('html, body').animate({
+            scrollTop: $("#web-scraping-search-spinner").offset().top
+        }, 1000);
+        disable_all_buttons_import('#web-scraping-import-page');
     
         $.ajax({
             type : "POST",
@@ -21,15 +36,43 @@ jQuery(document).ready(function($) {
             data : {
                 action: "get_quantity_articles", 
                 url: $('#form-web-scraping-url').val(),
-                article: $('#form-web-scraping-article').val()
+                article: $('.web-scraping-page-body > .form-web-scraping-element > input').val()
             },
             success: function(response) {
-                $('#web-scraping-data-obtained-notice').text("Obtaining data from " + response.quantity + " articles...");
-                get_all_articles(response.url_articles, $('#form-web-scraping-title').val(), $('#form-web-scraping-import').val());
+                console.log(response);
+                if (response.status == "error") {
+                    $('#web-scraping-data-obtained-notice').text(response.message);
+                    $('#web-scraping-search-spinner').css('display','none');
+                    enable_all_buttons_import('#web-scraping-import-page');
+                    return;
+                }
+                if(get_language() == 'english') {
+                    $('#web-scraping-data-obtained-notice').text("Obtaining data from " + response.quantity + " articles...");
+                } else {
+                    $('#web-scraping-data-obtained-notice').text("Obteniendo datos de " + response.quantity + " artículos...");
+                }
+                
+                get_all_articles(response.url_articles, $('.web-scraping-page-body .web-scraping-page-content').val(), $('#form-web-scraping-import').val());
             }
         });   
     
     });
+
+    /**
+     * Detecta si hay inputs vacíos y les agrega una clase señalando que están vacíos
+     * 
+     * @returns bool True si hay inputs vacíos, false si no
+     */
+    function detect_empty_inputs() {
+        var empty_inputs = false;
+        $('#form-web-scraping input').each(function(){
+            if (!$(this).val()) {
+                $(this).addClass('input-error');
+                empty_inputs = true;
+            }
+        });
+        return empty_inputs;
+    }
 
     function get_all_articles(url_articles, title_jquery, content_jquery){
         $.ajax({
@@ -44,23 +87,23 @@ jQuery(document).ready(function($) {
                 reading_format: $('#form-web-scraping-reading-format').val()
             },
             success: function(response) {
-                $('#web-scraping-data-obtained-notice').text(response.articles.length + " articles obtained");
+                console.log(response);
                 $('#web-scraping-search-spinner').css('display','none');
                 if(response.articles.length > 0){
+                    $('#web-scraping-data-obtained-notice').text(response.articles.length + " articles obtained");
                     response.articles.forEach( function( article ) {
                         article = format_HTML(article);
                         $("#web-scraping-articles").append(article);
                     });
-                    toggle_disable_all_buttons_import();
+                    enable_all_buttons_import('#web-scraping-import-page');
 
                     $('body').on("click", ".web-scraping-article-element .submit", function(e){
-
                         var article_id = $(this).attr('article-id');
                         create_post_by_article(article_id);
                     });
 
                     $('body').on("click", "#web-scraping-data-obtained-create-all-posts", function(e){
-                        toggle_disable_all_buttons_import();
+                        disable_all_buttons_import('#web-scraping-import-page');
                         var numArticles = $('#web-scraping-articles .web-scraping-article-element').length;
                         $("#web-scraping-data-obtained-notice").html('<span class="web-scraping-count-published">0</span> of <span class="web-scraping-count-articles">' + numArticles + '</span> articles published');
                         $('#web-scraping-articles .web-scraping-article-element').each(function(index, element){
@@ -70,7 +113,7 @@ jQuery(document).ready(function($) {
                     });
 
                     $('body').on("click", "#web-scraping-data-obtained-format-all", function(e){
-                        toggle_disable_all_buttons_import();
+                        disable_all_buttons_import('#web-scraping-import-page');
                         $('#web-scraping-articles .web-scraping-article-element').each(function(index, element){
                             var article_id = $(element).attr('article-id');
                             format_article(article_id);
@@ -88,18 +131,26 @@ jQuery(document).ready(function($) {
         });   
     }
 
-    // Alterna deshabilitar o habilitar los botones de la página de importación
-    function toggle_disable_all_buttons_import() {
-        var attr = $('#web-scraping-import-page button').attr('disabled');
-        if(typeof attr !== 'undefined' && attr !== false) {
-            $('#web-scraping-import-page button').removeAttr("disabled");
-            $('#web-scraping-import-page button').css('opacity','1');
-            $('#web-scraping-import-page button').css('cursor','pointer');
-        } else {
-            $('#web-scraping-import-page button').attr('disabled', 'disabled');
-            $('#web-scraping-import-page button').css('opacity','0.5');
-            $('#web-scraping-import-page button').css('cursor','auto');
-        }
+    /**
+     * Deshabilita los botones de cierta parte de la página que se le pase
+     * 
+     * @param {string} selector Selector de la parte de la página que se desea deshabilitar
+     */
+    function disable_all_buttons_import(selector) {
+        $(selector + ' button').attr('disabled', 'disabled');
+        $(selector + ' button').css('opacity','0.5');
+        $(selector + ' button').css('cursor','auto');
+    }
+
+    /**
+     * Habilita los botones de cierta parte de la página que se le pase
+     * 
+     * @param {string} selector Selector de la parte de la página que se desea habilitar 
+     */
+    function enable_all_buttons_import(selector) {
+        $(selector + ' button').removeAttr("disabled");
+        $(selector + ' button').css('opacity','1');
+        $(selector + ' button').css('cursor','pointer');
     }
 
     // Crea un post a partir de un id de articulo
@@ -122,7 +173,7 @@ jQuery(document).ready(function($) {
                 count++;
                 $('.web-scraping-count-published').text(count);
                 if (count == $('.web-scraping-count-articles').text()) {
-                    toggle_disable_all_buttons_import();
+                    enable_all_buttons_import('#web-scraping-import-page');
                 }
             }
         }); 
@@ -172,4 +223,8 @@ jQuery(document).ready(function($) {
         };   
         return parse(html.replace(/(\r\n|\n|\r)/gm," ").replace(/ +(?= )/g,''));
     }; 
+
+    function get_language() {
+        return $('#wep-scraping-plugin-language').text();
+    }
 })
